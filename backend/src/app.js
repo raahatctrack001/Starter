@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
+import { ApiResponse } from './Utils/apiResponse.js';
 
 const app = express();
 
@@ -12,4 +13,16 @@ app.use(cors({
 }));
 app.use(cookieParser());
 
+import authRouter from './Routes/auth.routes.js';
+
+app.use('/api/v1/auth', authRouter);
+
+
+app.use((err, req, res, next)=>{
+    res
+    .status(err.statusCode||500)
+    .json(
+        new ApiResponse(err.statusCode||400, err.message||"something went wrong", null)
+    );
+});
 export default app;
